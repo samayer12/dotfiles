@@ -46,6 +46,9 @@ function install_cmd() {
       --dnf=?*)
         dnf="${1#*=}"; shift;
         ;;
+      --pip=?*)
+        pip="${1#*=}"; shift;
+        ;;
       --apt=?*)
         apt="${1#*=}"; shift;
         ;;
@@ -67,6 +70,12 @@ function install_cmd() {
         eval "echo_and_run $brew"
       else
         echo_and_run brew install "$cmd"
+      fi
+    elif [[ $(command -v pip) ]]; then
+      if [[ -n "$pip" ]]; then
+        eval "echo_and_run $pip"
+      else
+        echo_and_run pip install "$cmd"
       fi
     elif [[ $(command -v dnf) ]]; then
       if [[ -n "$dnf" ]]; then
@@ -101,9 +110,9 @@ install_cmd rg --apt="sudo apt install ripgrep" --dnf="sudo dnf install --assume
 install_cmd git-number --linux="install_git_number_on_linux"
 install_cmd tmux
 install_cmd autojump
-install_cmd node
+install_cmd nodejs
 install_cmd shellcheck --dnf="sudo dnf install --assumeyes ShellCheck"
-install_cmd vint # vimscript linting
+install_cmd vint --pip="pip install vim-vint" # vimscript linting
 
 vim/setup-vim.sh
 zsh/setup-zsh.sh
