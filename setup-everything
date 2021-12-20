@@ -97,11 +97,10 @@ function install_git_number_on_linux() {
 }
 
 install_cmd zsh --not="/bin/zsh"
-install_cmd rg --brew="brew install ripgrep" --dnf="sudo dnf install --assumeyes ripgrep"
+install_cmd rg --apt="sudo apt install ripgrep" --dnf="sudo dnf install --assumeyes ripgrep"
 install_cmd git-number --linux="install_git_number_on_linux"
 install_cmd tmux
 install_cmd autojump
-install_cmd alacritty
 install_cmd node
 install_cmd shellcheck --dnf="sudo dnf install --assumeyes ShellCheck"
 install_cmd vint # vimscript linting
