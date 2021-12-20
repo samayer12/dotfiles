@@ -208,7 +208,6 @@ fbr() {
   ##### Home Laptop #####
   if [ "$(hostname)" == "zamperini2" ]; then
     echo "bash_profile: zamperini2 init"
-    alias journal="gnome-terminal --command='wordsafe j' --title='Journal' --full-screen --hide-menubar"
 
     alias dsk='jump dsk'
     alias dls='jump dls'
