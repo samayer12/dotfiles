@@ -1541,6 +1541,10 @@ let g:html_wrong_comments=1
   endif
   "(source: http://nerditya.com/code/guide-to-neovim/)
 
+  if !&colorcolumn
+    set colorcolumn=121 " Draw a vertical line at 121st column.
+  endif
+
 " Tabs
   set expandtab     " SPACES over TABS
   set smarttab      " delete multiple spaces at once (as if deleting a tab character)
