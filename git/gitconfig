@@ -15,9 +15,11 @@
   dfw = diff --word-diff=color
   lol = log --graph --decorate --oneline
   lola = log --graph --decorate --oneline --all
+[core]
+  editor = "vim"
 [user]
-  name = Jon Smithers
-  email = jon@smithers.dev
+  name = Sam Mayer
+  email = samayer12@gmail.com
 [difftool]
   prompt = false
 [mergetool]
@@ -29,5 +31,8 @@
   sort = -authordate
 [rebase]
   autoStash = true
+[rerere]
+  enabled = true
+  autoupdate = true
 [commit]
   verbose = true
