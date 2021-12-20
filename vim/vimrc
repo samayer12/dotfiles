@@ -1016,9 +1016,7 @@ EOF
   " }}}
 
   " {{{ language syntax plugins
-  Plug 'dag/vim-fish'
   Plug 'fatih/vim-go'
-  Plug 'fladson/vim-kitty'
   Plug 'Glench/Vim-Jinja2-Syntax'
   Plug 'jonsmithers/vim-html-template-literals'
   Plug 'MaxMEllon/vim-jsx-pretty'

@@ -104,7 +104,6 @@ install_cmd autojump
 install_cmd alacritty
 install_cmd node
 install_cmd shellcheck --dnf="sudo dnf install --assumeyes ShellCheck"
-install_cmd fish
 install_cmd vint # vimscript linting
 
 vim/setup-vim.sh
