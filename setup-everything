@@ -8,15 +8,11 @@ if prompt "Symlink dotfiles?"; then
   fi
 fi
 
-if [[ $(command -v fzf) ]]; then
-  echo -e " ${GREEN}✓${NORMAL} fzf installed"
-elif prompt " ${RED}✗${NORMAL} missing fzf - install?"; then
-  [[ -d "$HOME/.fzf" ]] && echo_and_run rm -rf "$HOME/.fzf"
-  echo_and_run git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  echo_and_run ~/.fzf/install --all
-fi
-
 function install_cmd() {
+  local cmd=''       # Binary command of interest
+  local pkg=''       # Name of package that contains command, sometimes differs from --cmd
+  local installer='' # Mutually exclusive with --custom
+  local custom=''    # Mutually exclusive with --installer
   while :; do
     case $1 in
       --cmd=?*)
@@ -28,6 +24,9 @@ function install_cmd() {
       --installer=?*)
         installer="${1#*=}"; shift;
         ;;
+      --custom=?*)
+        custom="${1#*=}"; shift;
+        ;;
       ?*)
         echo "unknown option \"$1\""
         exit 1
@@ -36,11 +35,22 @@ function install_cmd() {
         break;
     esac
   done
+
   if [[ $(command -v "$cmd") ]]; then
     echo -e " ${GREEN}✓${NORMAL} $cmd installed"
   elif prompt " ${RED}✗${NORMAL} missing $cmd from package $pkg - install?"; then
+    if [[ -n $custom ]]; then
+      $custom
+    else
     install_package $pkg $installer
+    fi
   fi
+}
+
+function install_fzf_on_linux(){
+  [[ -d "$HOME/.fzf" ]] && echo_and_run rm -rf "$HOME/.fzf"
+  echo_and_run git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  echo_and_run ~/.fzf/install --all
 }
 
 function install_git_number_on_linux() {
@@ -52,15 +62,21 @@ function install_git_number_on_linux() {
   );
 }
 
-# install_cmd zsh --not="/bin/zsh"
+#Custom Installs
+install_cmd --cmd=fzf --custom=install_fzf_on_linux
+install_cmd --cmd=git-number --custom=install_git_number_on_linux
+
+# Apt Installs
+install_cmd --cmd=zsh --pkg=zsh --installer=apt
 install_cmd --cmd=rg --pkg=ripgrep --installer=apt
-# install_cmd git-number --linux="install_git_number_on_linux"
 install_cmd --cmd=tmux --pkg=tmux --installer=apt
 install_cmd --cmd=autojump --pkg=autojump --installer=apt
-# install_cmd --cmd=node --pkg=nodejs --installer=apt
+install_cmd --cmd=node --pkg=nodejs --installer=apt
 install_cmd --cmd=shellcheck --pkg=shellcheck --installer=apt
+
+# Pip Installs
 install_cmd --cmd=vint --pkg=vim-vint --installer=pip # vimscript linting
 
-# vim/setup-vim.sh
-# zsh/setup-zsh.sh
-# osx/set-defaults.sh
+vim/setup-vim.sh
+zsh/setup-zsh.sh
+osx/set-defaults.sh
