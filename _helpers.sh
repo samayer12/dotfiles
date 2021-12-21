@@ -22,6 +22,22 @@ function echo_and_run() {
 }
 echoerr() { echo "$@" 1>&2; }
 
+function identify_pkg_manager(){
+  declare -A osInfo;
+  osInfo[/etc/redhat-release]=yum
+  osInfo[/etc/arch-release]=pacman
+  osInfo[/etc/gentoo-release]=emerge
+  osInfo[/etc/SuSE-release]=zypp
+  osInfo[/etc/debian_version]="sudo apt install -y"
+  
+  for f in ${!osInfo[@]}
+  do
+      if [[ -f $f ]];then
+          echo Package installation command: ${osInfo[$f]}
+      fi
+  done
+}
+
 function install_package(){
 
   declare -A INSTALLERS=( 
@@ -30,23 +46,25 @@ function install_package(){
       [dnf]="sudo dnf install --assume yes"
       [pip]="pip install"
 
-)
-    if [[ $# -ne 2 ]]; then
-        echo "Specify package installer and package to install"
-        echo "Received $#, $*"
-        exit 1
-    fi
+  )
 
-    package=$1
-    installer=$2
+  
+  if [[ $# -ne 2 ]]; then
+      echo "Specify package installer and package to install"
+      echo "Received $#, $*"
+      exit 1
+  fi
 
-    if ! [[ ${INSTALLERS[$installer]} && $(command -v "$installer") ]];
-    then
-        echo "$installer is an unsupported installer."
-        echo "Either _helpers.sh needs to know about it in INSTALLERS"
-        echo "or it is not installed on this system."
-    fi
-    
-    echo "Install $package with $installer"
-    echo "$package" | xargs -I _ ${INSTALLERS[$installer]} _
+  package=$1
+  installer=$2
+
+  if ! [[ ${INSTALLERS[$installer]} && $(command -v "$installer") ]];
+  then
+      echo "$installer is an unsupported installer."
+      echo "Either _helpers.sh needs to know about it in INSTALLERS"
+      echo "or it is not installed on this system."
+  fi
+  
+  echo "Install $package with $installer"
+  echo "$package" | xargs -I _ ${INSTALLERS[$installer]} _
 }
