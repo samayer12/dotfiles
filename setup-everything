@@ -17,40 +17,16 @@ elif prompt " ${RED}✗${NORMAL} missing fzf - install?"; then
 fi
 
 function install_cmd() {
-  local dnf=''
-  local brew=''
-  local apt=''
-  local linux=''
-  local not=''
-  local cmd="$1"; shift;
   while :; do
     case $1 in
-      --dnf)
-        if [[ "$2" ]]; then
-          dnf="$2"
-          shift
-        else
-          echo "missing dnf value"
-          exit 1
-        fi
+      --cmd=?*)
+        cmd="${1#*=}"; shift;
         ;;
-      --not=?*)
-        not="${1#*=}"; shift;
+      --pkg=?*)
+        pkg="${1#*=}"; shift;
         ;;
-      --linux=?*)
-        linux="${1#*=}"; shift;
-        ;;
-      --brew=?*)
-        brew="${1#*=}"; shift;
-        ;;
-      --dnf=?*)
-        dnf="${1#*=}"; shift;
-        ;;
-      --pip=?*)
-        pip="${1#*=}"; shift;
-        ;;
-      --apt=?*)
-        apt="${1#*=}"; shift;
+      --installer=?*)
+        installer="${1#*=}"; shift;
         ;;
       ?*)
         echo "unknown option \"$1\""
@@ -60,39 +36,10 @@ function install_cmd() {
         break;
     esac
   done
-  if [[ $(command -v "$cmd") && "$(command -v "$cmd")" != "$not" ]]; then
+  if [[ $(command -v "$cmd") ]]; then
     echo -e " ${GREEN}✓${NORMAL} $cmd installed"
-  elif prompt " ${RED}✗${NORMAL} missing $cmd - install?"; then
-    if [[ -n "$linux" && "$(uname -s)" == "Linux" ]]; then
-      eval "echo_and_run $linux"
-    elif [[ $(command -v brew) ]]; then
-      if [[ -n "$brew" ]]; then
-        eval "echo_and_run $brew"
-      else
-        echo_and_run brew install "$cmd"
-      fi
-    elif [[ $(command -v pip) ]]; then
-      if [[ -n "$pip" ]]; then
-        eval "echo_and_run $pip"
-      else
-        echo_and_run pip install "$cmd"
-      fi
-    elif [[ $(command -v dnf) ]]; then
-      if [[ -n "$dnf" ]]; then
-        eval "echo_and_run $dnf"
-      else
-        echo_and_run sudo dnf install --assumeyes "$cmd"
-      fi
-    elif [[ $(command -v apt) ]]; then
-      if [[ -n "$apt" ]]; then
-        eval "echo_and_run $apt"
-      else
-        echo_and_run sudo apt install "$cmd"
-      fi
-    else
-      echo "I don't know how to install this"
-      exit 1
-    fi
+  elif prompt " ${RED}✗${NORMAL} missing $cmd from package $pkg - install?"; then
+    install_package $pkg $installer
   fi
 }
 
@@ -105,15 +52,15 @@ function install_git_number_on_linux() {
   );
 }
 
-install_cmd zsh --not="/bin/zsh"
-install_cmd rg --apt="sudo apt install ripgrep" --dnf="sudo dnf install --assumeyes ripgrep"
-install_cmd git-number --linux="install_git_number_on_linux"
-install_cmd tmux
-install_cmd autojump
-install_cmd nodejs
-install_cmd shellcheck --dnf="sudo dnf install --assumeyes ShellCheck"
-install_cmd vint --pip="pip install vim-vint" # vimscript linting
+# install_cmd zsh --not="/bin/zsh"
+install_cmd --cmd=rg --pkg=ripgrep --installer=apt
+# install_cmd git-number --linux="install_git_number_on_linux"
+install_cmd --cmd=tmux --pkg=tmux --installer=apt
+install_cmd --cmd=autojump --pkg=autojump --installer=apt
+# install_cmd --cmd=node --pkg=nodejs --installer=apt
+install_cmd --cmd=shellcheck --pkg=shellcheck --installer=apt
+install_cmd --cmd=vint --pkg=vim-vint --installer=pip # vimscript linting
 
-vim/setup-vim.sh
-zsh/setup-zsh.sh
-osx/set-defaults.sh
+# vim/setup-vim.sh
+# zsh/setup-zsh.sh
+# osx/set-defaults.sh
