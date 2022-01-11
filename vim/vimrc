@@ -1036,9 +1036,6 @@ EOF
   " }}}
 
   " {{{ colorscheme/theme plugins
-  if &term == 'alacritty'
-    let &term='xterm-256color'
-  endif
   if (has('termguicolors'))
     set termguicolors
   else
@@ -1534,12 +1531,16 @@ let g:html_wrong_comments=1
                     " execute [:h QUERY] to open help page in vertical split buffer
 
   if !&scrolloff
-    set scrolloff=3 " Show next 3 lines while scrolling.
+    set scrolloff=8 " Show next 8 lines while scrolling.
   endif
   if !&sidescrolloff
-    set sidescrolloff=5 " Show next 5 columns while side-scrolling.
+    set sidescrolloff=8 " Show next 8 columns while side-scrolling.
   endif
   "(source: http://nerditya.com/code/guide-to-neovim/)
+
+  if !&colorcolumn
+    set colorcolumn=121 " Draw a vertical line at 121st column.
+  endif
 
 " Tabs
   set expandtab     " SPACES over TABS

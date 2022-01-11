@@ -8,46 +8,24 @@ if prompt "Symlink dotfiles?"; then
   fi
 fi
 
-if [[ $(command -v fzf) ]]; then
-  echo -e " ${GREEN}✓${NORMAL} fzf installed"
-elif prompt " ${RED}✗${NORMAL} missing fzf - install?"; then
-  [[ -d "$HOME/.fzf" ]] && echo_and_run rm -rf "$HOME/.fzf"
-  echo_and_run git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  echo_and_run ~/.fzf/install --all
-fi
-
 function install_cmd() {
-  local dnf=''
-  local brew=''
-  local apt=''
-  local linux=''
-  local not=''
-  local cmd="$1"; shift;
+  local cmd=''       # Binary command of interest
+  local pkg=''       # Name of package that contains command, sometimes differs from --cmd
+  local installer='' # Mutually exclusive with --custom
+  local custom=''    # Mutually exclusive with --installer
   while :; do
     case $1 in
-      --dnf)
-        if [[ "$2" ]]; then
-          dnf="$2"
-          shift
-        else
-          echo "missing dnf value"
-          exit 1
-        fi
+      --cmd=?*)
+        cmd="${1#*=}"; shift;
         ;;
-      --not=?*)
-        not="${1#*=}"; shift;
+      --pkg=?*)
+        pkg="${1#*=}"; shift;
         ;;
-      --linux=?*)
-        linux="${1#*=}"; shift;
+      --installer=?*)
+        installer="${1#*=}"; shift;
         ;;
-      --brew=?*)
-        brew="${1#*=}"; shift;
-        ;;
-      --dnf=?*)
-        dnf="${1#*=}"; shift;
-        ;;
-      --apt=?*)
-        apt="${1#*=}"; shift;
+      --custom=?*)
+        custom="${1#*=}"; shift;
         ;;
       ?*)
         echo "unknown option \"$1\""
@@ -57,34 +35,22 @@ function install_cmd() {
         break;
     esac
   done
-  if [[ $(command -v "$cmd") && "$(command -v "$cmd")" != "$not" ]]; then
+
+  if [[ $(command -v "$cmd") ]]; then
     echo -e " ${GREEN}✓${NORMAL} $cmd installed"
-  elif prompt " ${RED}✗${NORMAL} missing $cmd - install?"; then
-    if [[ -n "$linux" && "$(uname -s)" == "Linux" ]]; then
-      eval "echo_and_run $linux"
-    elif [[ $(command -v brew) ]]; then
-      if [[ -n "$brew" ]]; then
-        eval "echo_and_run $brew"
-      else
-        echo_and_run brew install "$cmd"
-      fi
-    elif [[ $(command -v dnf) ]]; then
-      if [[ -n "$dnf" ]]; then
-        eval "echo_and_run $dnf"
-      else
-        echo_and_run sudo dnf install --assumeyes "$cmd"
-      fi
-    elif [[ $(command -v apt) ]]; then
-      if [[ -n "$apt" ]]; then
-        eval "echo_and_run $apt"
-      else
-        echo_and_run sudo apt install "$cmd"
-      fi
+  elif prompt " ${RED}✗${NORMAL} missing $cmd from package $pkg - install?"; then
+    if [[ -n $custom ]]; then
+      $custom
     else
-      echo "I don't know how to install this"
-      exit 1
+    install_package $pkg $installer
     fi
   fi
+}
+
+function install_fzf_on_linux(){
+  [[ -d "$HOME/.fzf" ]] && echo_and_run rm -rf "$HOME/.fzf"
+  echo_and_run git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  echo_and_run ~/.fzf/install --all
 }
 
 function install_git_number_on_linux() {
@@ -96,15 +62,20 @@ function install_git_number_on_linux() {
   );
 }
 
-install_cmd zsh --not="/bin/zsh"
-install_cmd rg --brew="brew install ripgrep" --dnf="sudo dnf install --assumeyes ripgrep"
-install_cmd git-number --linux="install_git_number_on_linux"
-install_cmd tmux
-install_cmd autojump
-install_cmd alacritty
-install_cmd node
-install_cmd shellcheck --dnf="sudo dnf install --assumeyes ShellCheck"
-install_cmd vint # vimscript linting
+#Custom Installs
+install_cmd --cmd=fzf --custom=install_fzf_on_linux
+install_cmd --cmd=git-number --custom=install_git_number_on_linux
+
+# Pamac Installs
+install_cmd --cmd=zsh --pkg=zsh --installer=pamac
+install_cmd --cmd=rg --pkg=ripgrep --installer=pamac
+install_cmd --cmd=tmux --pkg=tmux --installer=pamac
+install_cmd --cmd=autojump --pkg=autojump --installer=pamac
+install_cmd --cmd=node --pkg=nodejs --installer=pamac
+install_cmd --cmd=shellcheck --pkg=shellcheck --installer=pamac
+
+# Pip Installs
+install_cmd --cmd=vint --pkg=vim-vint --installer=pip # vimscript linting
 
 vim/setup-vim.sh
 zsh/setup-zsh.sh
