@@ -66,13 +66,13 @@ function install_git_number_on_linux() {
 install_cmd --cmd=fzf --custom=install_fzf_on_linux
 install_cmd --cmd=git-number --custom=install_git_number_on_linux
 
-# Apt Installs
-install_cmd --cmd=zsh --pkg=zsh --installer=apt
-install_cmd --cmd=rg --pkg=ripgrep --installer=apt
-install_cmd --cmd=tmux --pkg=tmux --installer=apt
-install_cmd --cmd=autojump --pkg=autojump --installer=apt
-install_cmd --cmd=node --pkg=nodejs --installer=apt
-install_cmd --cmd=shellcheck --pkg=shellcheck --installer=apt
+# Pamac Installs
+install_cmd --cmd=zsh --pkg=zsh --installer=pamac
+install_cmd --cmd=rg --pkg=ripgrep --installer=pamac
+install_cmd --cmd=tmux --pkg=tmux --installer=pamac
+install_cmd --cmd=autojump --pkg=autojump --installer=pamac
+install_cmd --cmd=node --pkg=nodejs --installer=pamac
+install_cmd --cmd=shellcheck --pkg=shellcheck --installer=pamac
 
 # Pip Installs
 install_cmd --cmd=vint --pkg=vim-vint --installer=pip # vimscript linting

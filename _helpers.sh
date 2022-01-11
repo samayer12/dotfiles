@@ -45,6 +45,7 @@ function install_package(){
       [brew]="brew install"
       [dnf]="sudo dnf install --assume yes"
       [pip]="pip install"
+      [pamac]="pamac install --no-confirm"
 
   )
 
