@@ -1,7 +1,7 @@
 " personal vimrc
 " Author:       Jon Smithers <jon@smithers.dev>
 " URL:          https://github.com/jonsmithers/dotfiles/blob/master/vim/vimrc
-" Last Updated: 2021-12-18
+" Last Updated: 2022-01-11
 
 :scriptencoding utf8
 
@@ -1538,6 +1538,10 @@ let g:html_wrong_comments=1
   endif
   "(source: http://nerditya.com/code/guide-to-neovim/)
 
+  if !&cursorline
+    set cursorline " Highlight the current line
+  endif
+
   if !&colorcolumn
     set colorcolumn=121 " Draw a vertical line at 121st column.
   endif
@@ -1547,7 +1551,7 @@ let g:html_wrong_comments=1
   set smarttab      " delete multiple spaces at once (as if deleting a tab character)
   com! -nargs=1 Tab      set      tabstop=<args> | set      shiftwidth=<args> "| set softtabstop=<args>
   com! -nargs=1 LocalTab setlocal tabstop=<args> | setlocal shiftwidth=<args> "| set softtabstop=<args>
-  :Tab 2
+  :Tab 4
   " ^ to be overwritten by editorconfig whenever possible
 
 " Colorscheme things
