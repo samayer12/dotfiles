@@ -1,7 +1,7 @@
 " personal vimrc
 " Author:       Jon Smithers <jon@smithers.dev>
 " URL:          https://github.com/jonsmithers/dotfiles/blob/master/vim/vimrc
-" Last Updated: 2022-01-11
+" Last Updated: 2022-01-12
 
 :scriptencoding utf8
 
@@ -20,6 +20,16 @@ if (s:os ==# 'Windows')
 endif
 
 :let g:mapleader = ' '
+
+
+" ┌───────────────────┐
+" │ My preferences    │
+" └───────────────────┘
+set cursorline
+nnoremap j jzz| " Center cursor on scroll down
+nnoremap k kzz| " Center cursor on scroll up
+nnoremap G Gzz| " Center cursor on jump to bottom
+set colorcolumn=121
 
 " ┌───────────────────┐
 " │ download vim-plug │
@@ -1529,22 +1539,6 @@ let g:html_wrong_comments=1
 
   :cabbrev h vert h
                     " execute [:h QUERY] to open help page in vertical split buffer
-
-  if !&scrolloff
-    set scrolloff=8 " Show next 8 lines while scrolling.
-  endif
-  if !&sidescrolloff
-    set sidescrolloff=8 " Show next 8 columns while side-scrolling.
-  endif
-  "(source: http://nerditya.com/code/guide-to-neovim/)
-
-  if !&cursorline
-    set cursorline " Highlight the current line
-  endif
-
-  if !&colorcolumn
-    set colorcolumn=121 " Draw a vertical line at 121st column.
-  endif
 
 " Tabs
   set expandtab     " SPACES over TABS
