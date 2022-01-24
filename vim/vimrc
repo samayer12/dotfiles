@@ -1,7 +1,7 @@
 " personal vimrc
 " Author:       Jon Smithers <jon@smithers.dev>
 " URL:          https://github.com/jonsmithers/dotfiles/blob/master/vim/vimrc
-" Last Updated: 2022-01-12
+" Last Updated: 2022-01-23
 
 :scriptencoding utf8
 
@@ -30,6 +30,8 @@ nnoremap j jzz| " Center cursor on scroll down
 nnoremap k kzz| " Center cursor on scroll up
 nnoremap G Gzz| " Center cursor on jump to bottom
 set colorcolumn=121
+set clipboard=unnamedplus
+noremap y "*y
 
 " ┌───────────────────┐
 " │ download vim-plug │
